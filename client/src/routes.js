@@ -1,14 +1,27 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+import MainLayout from './layouts/MainLayout';
+
 import App from './pages/App';
 import Game from './pages/Game';
+
+const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
+  <Route
+    render={props => (
+      <Layout>
+        <Component {...props} />
+      </Layout>
+    )}
+    {...rest}
+  />
+);
 
 export default () => (
   <Router>
     <Switch>
-      <Route path="/games/:id" component={Game} />
-      <Route exact path="/" component={App} />
+      <AppRoute path="/games/:id" component={Game} layout={MainLayout} />
+      <AppRoute exact path="/" component={App} layout={MainLayout} />
     </Switch>
   </Router>
 );
