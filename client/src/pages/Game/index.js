@@ -5,7 +5,10 @@ import {
   Paper,
   Typography,
   LinearProgress,
-  Button
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogActions
 } from '@material-ui/core';
 
 const Game = () => {
@@ -114,6 +117,26 @@ const Game = () => {
     }
   };
 
+  const renderConfirmation = () => {
+    const message = player.health === 0 ? 'You Lost!' : 'You Win!';
+
+    return (
+      <Dialog open={finished} fullWidth>
+        <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
+          {message} Play Again?
+        </DialogTitle>
+        <DialogActions>
+          <Button variant="contained" color="primary" fullWidth>
+            Yes
+          </Button>
+          <Button variant="contained" color="primary" fullWidth>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
   return (
     <div style={{ flexGrow: 1 }}>
       <Grid container spacing={3}>
@@ -209,6 +232,7 @@ const Game = () => {
           </Paper>
         </Grid>
       </Grid>
+      {renderConfirmation()}
     </div>
   );
 };
