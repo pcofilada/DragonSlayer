@@ -1,16 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  LinearProgress,
+  Button
+} from '@material-ui/core';
 
 const Game = () => {
   const [player, setPlayer] = useState({ name: 'Patrick', health: 100 });
   const [dragon, setDragon] = useState({ name: 'Dragon', health: 100 });
   const [logs, setLogs] = useState([]);
   const [finished, setFinished] = useState(false);
+  const logsEndRef = useRef(null);
 
   useEffect(() => {
     if (player.health === 0 || dragon.health === 0) {
       setFinished(true);
     }
   }, [player, dragon]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [logs]);
+
+  const scrollToBottom = () => {
+    logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const numberGenerator = () => Math.floor(Math.random() * 11);
 
@@ -33,6 +50,10 @@ const Game = () => {
     setDragon({ ...dragon, health: Math.max(0, dragon.health - playerDamage) });
     logger(player.name, dragon.name, 'attack', playerDamage);
 
+    if (Math.max(0, dragon.health - playerDamage) === 0) {
+      return;
+    }
+
     setTimeout(() => {
       setPlayer({
         ...player,
@@ -48,6 +69,10 @@ const Game = () => {
 
     setDragon({ ...dragon, health: Math.max(0, dragon.health - playerDamage) });
     logger(player.name, dragon.name, 'blast', playerDamage);
+
+    if (Math.max(0, dragon.health - playerDamage) === 0) {
+      return;
+    }
 
     setTimeout(() => {
       setPlayer({
@@ -90,29 +115,100 @@ const Game = () => {
   };
 
   return (
-    <div>
-      <div className="player">
-        <div>{player.name}</div>
-        <div>{player.health}</div>
-      </div>
-      <div className="dragon">
-        <div>{dragon.name}</div>
-        <div>{dragon.health}</div>
-      </div>
-      <button onClick={() => basicAttack()} disabled={finished}>
-        Attack
-      </button>
-      <button onClick={() => blastAttack()} disabled={finished}>
-        Blast
-      </button>
-      <button onClick={() => heal()} disabled={finished}>
-        Heal
-      </button>
-      <div className="actions">
-        {logs.map(log => (
-          <div key={log.value}>{renderLog(log)}</div>
-        ))}
-      </div>
+    <div style={{ flexGrow: 1 }}>
+      <Grid container spacing={3}>
+        <Grid item xs={8}>
+          <Box
+            className="contenders"
+            display="flex"
+            justifyContent="space-around"
+          >
+            <Grid item xs={5}>
+              <Typography className="player">
+                <h2 className="name">{player.name}</h2>
+                <div className="health">
+                  {player.health} / 100
+                  <LinearProgress
+                    color="secondary"
+                    variant="determinate"
+                    value={player.health}
+                  />
+                </div>
+              </Typography>
+            </Grid>
+            <Typography className="divider">
+              <h1>VS</h1>
+            </Typography>
+            <Grid item xs={5}>
+              <Typography className="dragon">
+                <h2 className="name">{dragon.name}</h2>
+                <div className="health">
+                  {dragon.health} / 100
+                  <LinearProgress
+                    color="secondary"
+                    variant="determinate"
+                    value={dragon.health}
+                  />
+                </div>
+              </Typography>
+            </Grid>
+          </Box>
+          <Box
+            className="contenders"
+            display="flex"
+            justifyContent="space-around"
+            mt={5}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => basicAttack()}
+              disabled={finished}
+              style={{ width: '150px' }}
+            >
+              ATTACK
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => blastAttack()}
+              disabled={finished}
+              style={{ width: '150px' }}
+            >
+              BLAST
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => heal()}
+              disabled={finished}
+              style={{ width: '150px' }}
+            >
+              HEAL
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setFinished(true)}
+              disabled={finished}
+              style={{ width: '150px' }}
+            >
+              GIVE UP
+            </Button>
+          </Box>
+        </Grid>
+        <Grid item xs={4}>
+          <h4>Logs</h4>
+          <Paper elevation={0} variant="outlined">
+            <Box m={2} height={200} style={{ overflow: 'scroll' }}>
+              {logs.map((log, index) => (
+                <div key={index}>{renderLog(log)}</div>
+              ))}
+              <div ref={logsEndRef} />
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
     </div>
   );
 };
