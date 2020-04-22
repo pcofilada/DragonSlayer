@@ -5,6 +5,7 @@ import MainLayout from './layouts/MainLayout';
 
 import App from './pages/App';
 import Game from './pages/Game';
+import Signin from './pages/Signin';
 
 const AppRoute = ({ component: Component, layout: Layout, ...rest }) => (
   <Route
@@ -21,6 +22,7 @@ export default () => (
   <Router>
     <Switch>
       <AppRoute path="/games/:id" component={Game} layout={MainLayout} />
+      <AppRoute exact path="/signin" component={Signin} layout={MainLayout} />
       <AppRoute exact path="/" component={App} layout={MainLayout} />
     </Switch>
   </Router>
