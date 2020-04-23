@@ -17,7 +17,7 @@ const ViewGame = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3030/api/auth/me', {
+      .get(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
         headers: {
           'auth-token': authToken
         }
@@ -26,7 +26,7 @@ const ViewGame = () => {
         const fullname = data.fullname;
 
         axios
-          .get(`http://localhost:3030/api/games/${uuid}`, {
+          .get(`${process.env.REACT_APP_API_URL}/api/games/${uuid}`, {
             headers: {
               'auth-token': authToken
             }

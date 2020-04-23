@@ -25,7 +25,7 @@ const Signin = () => {
     setSubmitDisabled(true);
     setLoading(true);
     axios
-      .post('http://localhost:3030/api/auth/signup', {
+      .post(`${process.env.REACT_APP_API_URL}/api/auth/signup`, {
         fullname,
         email,
         password

@@ -16,7 +16,7 @@ const Main = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3030/api/games', {
+      .get(`${process.env.REACT_APP_API_URL}/api/games`, {
         headers: {
           'auth-token': authToken
         }

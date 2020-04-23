@@ -28,7 +28,7 @@ const NewGame = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3030/api/auth/me', {
+      .get(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
         headers: {
           'auth-token': authToken
         }
@@ -50,7 +50,7 @@ const NewGame = () => {
       };
 
       axios
-        .post('http://localhost:3030/api/games', data, {
+        .post(`${process.env.REACT_APP_API_URL}/api/games`, data, {
           headers: {
             'auth-token': authToken
           }
