@@ -5,10 +5,12 @@ import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt'
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/auth';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const Main = () => {
   const { authToken } = useContext(AuthContext);
   const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
   let history = useHistory();
 
   useEffect(() => {
@@ -20,6 +22,7 @@ const Main = () => {
       })
       .then(({ data }) => {
         setGames(data);
+        setLoading(false);
       });
   }, []);
 
@@ -58,6 +61,10 @@ const Main = () => {
       </Grid>
     );
   };
+
+  if (loading) {
+    return <LoadingScreen>Fetching Your Data...</LoadingScreen>;
+  }
 
   return (
     <div>
