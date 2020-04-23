@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useHistory, Link } from 'react-router-dom';
-import { Grid, Box, TextField, Button } from '@material-ui/core';
+import { Grid, Box } from '@material-ui/core';
+import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
   let history = useHistory();
+
+  useEffect(() => {
+    if (email.length !== 0 && password.length !== 0) {
+      setSubmitDisabled(false);
+    }
+  }, [email, password]);
 
   const submitHandler = e => {
     e.preventDefault();
 
+    setSubmitDisabled(true);
+    setLoading(true);
     axios
       .post('http://localhost:3030/api/auth/signin', {
         email,
@@ -20,7 +32,11 @@ const Signin = () => {
       .then(({ data }) => {
         Cookies.set('token', data.token);
 
-        history.push('/games/1');
+        history.push('/');
+      })
+      .catch(() => {
+        setPassword('');
+        setLoading(false);
       });
   };
 
@@ -28,17 +44,16 @@ const Signin = () => {
     <Box display="flex" justifyContent="center" spacing={3}>
       <Grid item xs={4}>
         <form onSubmit={e => submitHandler(e)}>
-          <TextField
+          <Input
             id="email"
             label="Email"
             type="email"
             variant="outlined"
             fullWidth
-            margin="normal"
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-          <TextField
+          <Input
             id="password"
             label="Password"
             type="password"
@@ -52,8 +67,9 @@ const Signin = () => {
             color="primary"
             fullWidth
             size="large"
-            style={{ marginTop: 10, marginBottom: 10 }}
             type="submit"
+            disabled={submitDisabled}
+            loading={loading}
           >
             Sign In
           </Button>
