@@ -4,6 +4,7 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import { AuthContext } from '../../context/auth';
 import LoadingScreen from '../../components/LoadingScreen';
 
@@ -32,6 +33,11 @@ const Main = () => {
       .substr(2, 6);
 
     history.push(`/games/${gameId}`);
+  };
+
+  const logout = () => {
+    Cookies.remove('token');
+    history.push('/signin');
   };
 
   const renderGameList = () => {
@@ -68,7 +74,12 @@ const Main = () => {
 
   return (
     <div>
-      <h2>Welcome</h2>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <h2>Welcome</h2>
+        <Button size="small" onClick={() => logout()}>
+          Logout
+        </Button>
+      </Box>
       <div className="game-records">
         <h4>Game Records</h4>
         <Box mb={5}>
