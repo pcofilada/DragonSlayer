@@ -1,24 +1,17 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
-import {
-  Box,
-  Grid,
-  Paper,
-  Typography,
-  LinearProgress,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogActions
-} from '@material-ui/core';
+import { Box, Grid, Paper, Typography, Button } from '@material-ui/core';
+import GameLoadingScreen from '../../components/GameLoadingScreen';
+import PlayerHealthBar from '../../components/PlayerHealthBar';
 
 const ViewGame = () => {
   const { authToken } = useContext(AuthContext);
   const [player, setPlayer] = useState({ name: 'Patrick', health: 100 });
   const [dragon, setDragon] = useState({ name: 'Dragon', health: 100 });
   const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
   let { uuid } = useParams();
   let history = useHistory();
 
@@ -42,6 +35,7 @@ const ViewGame = () => {
             setPlayer({ name: fullname, health: data.health });
             setDragon({ ...dragon, health: data.opponentHealth });
             setLogs(data.logs);
+            setLoading(false);
           });
       });
   }, []);
@@ -61,6 +55,10 @@ const ViewGame = () => {
     }
   };
 
+  if (loading) {
+    return <GameLoadingScreen>Fetching Game...</GameLoadingScreen>;
+  }
+
   return (
     <div style={{ flexGrow: 1 }}>
       <Grid container spacing={3}>
@@ -71,40 +69,19 @@ const ViewGame = () => {
             justifyContent="space-around"
           >
             <Grid item xs={5}>
-              <Typography className="player">
-                <h2 className="name">{player.name}</h2>
-                <div className="health">
-                  {player.health} / 100
-                  <LinearProgress
-                    color="secondary"
-                    variant="determinate"
-                    value={player.health}
-                  />
-                </div>
-              </Typography>
+              <PlayerHealthBar name={player.name} health={player.health} />
             </Grid>
             <Typography className="divider">
               <h1>VS</h1>
             </Typography>
             <Grid item xs={5}>
-              <Typography className="dragon">
-                <h2 className="name">{dragon.name}</h2>
-                <div className="health">
-                  {dragon.health} / 100
-                  <LinearProgress
-                    color="secondary"
-                    variant="determinate"
-                    value={dragon.health}
-                  />
-                </div>
-              </Typography>
+              <PlayerHealthBar name={dragon.name} health={dragon.health} />
             </Grid>
           </Box>
           <Box className="contenders" ml={2} mt={5}>
             <Button
               variant="contained"
               color="primary"
-              style={{ width: '150px' }}
               onClick={() => history.goBack()}
             >
               BACK
