@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Box } from '@material-ui/core';
+import { Grid, Button, Box, Paper } from '@material-ui/core';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAlt';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/auth';
@@ -31,15 +33,29 @@ const Main = () => {
 
   const renderGameList = () => {
     return (
-      <>
+      <Grid container spacing={3}>
         {games.map(game => (
-          <div>
-            <Link key={game.uuid} to={`/games/${game.uuid}/view`}>
-              Game {game.uuid}
-            </Link>
-          </div>
+          <Grid item xs={3}>
+            <Paper>
+              <Box
+                display="flex"
+                p={5}
+                alignItems="center"
+                justifyContent="center"
+                flexDirection="column"
+              >
+                {game.health !== 0 ? (
+                  <SentimentSatisfiedAltIcon fontSize="large" />
+                ) : (
+                  <SentimentVeryDissatisfiedIcon fontSize="large" />
+                )}
+                <div>Game ID: {game.uuid}</div>
+                <Link to={`/games/${game.uuid}/view`}>View Game</Link>
+              </Box>
+            </Paper>
+          </Grid>
         ))}
-      </>
+      </Grid>
     );
   };
 
