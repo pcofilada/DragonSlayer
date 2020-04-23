@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogActions
 } from '@material-ui/core';
-import GameLoadingScreen from '../../components/GameLoadingScreen';
+import LoadingScreen from '../../components/LoadingScreen';
 import PlayerHealthBar from '../../components/PlayerHealthBar';
 
 const NewGame = () => {
@@ -194,7 +194,7 @@ const NewGame = () => {
   };
 
   if (loading) {
-    return <GameLoadingScreen>Initializing Game...</GameLoadingScreen>;
+    return <LoadingScreen>Initializing Game...</LoadingScreen>;
   }
 
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, CircularProgress } from '@material-ui/core';
 
-const GameLoadingScreen = ({ children }) => (
+const LoadingScreen = ({ children }) => (
   <Box
     display="flex"
     alignItems="center"
@@ -14,4 +14,4 @@ const GameLoadingScreen = ({ children }) => (
   </Box>
 );
 
-export default GameLoadingScreen;
+export default LoadingScreen;

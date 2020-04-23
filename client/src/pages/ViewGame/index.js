@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams, useHistory } from 'react-router-dom';
 import { AuthContext } from '../../context/auth';
 import { Box, Grid, Paper, Typography, Button } from '@material-ui/core';
-import GameLoadingScreen from '../../components/GameLoadingScreen';
+import LoadingScreen from '../../components/LoadingScreen';
 import PlayerHealthBar from '../../components/PlayerHealthBar';
 
 const ViewGame = () => {
@@ -56,7 +56,7 @@ const ViewGame = () => {
   };
 
   if (loading) {
-    return <GameLoadingScreen>Fetching Game...</GameLoadingScreen>;
+    return <LoadingScreen>Fetching Game...</LoadingScreen>;
   }
 
   return (
