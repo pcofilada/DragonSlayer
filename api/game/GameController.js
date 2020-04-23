@@ -1,26 +1,27 @@
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 var Game = require('./Game');
+var VerifyToken = require('../auth/VerifyToken');
 
-router.get('/', function(req, res) {
-  Game.find({}, function(err, games) {
+router.get('/', VerifyToken, function(req, res) {
+  Game.find({ userId: req.userId }, function(err, games) {
     if (err)
       return res.status(500).send('There was a problem finding the games.');
     res.status(200).send(games);
   });
 });
 
-router.post('/', function(req, res) {
+router.post('/', VerifyToken, function(req, res) {
   Game.create(
     {
-      uuid: req.body.id,
+      uuid: req.body.uuid,
       health: req.body.health,
       opponentHealth: req.body.opponentHealth,
-      logs: req.body.logs
+      logs: req.body.logs,
+      userId: req.userId
     },
     function(err, game) {
       if (err)
@@ -32,8 +33,11 @@ router.post('/', function(req, res) {
   );
 });
 
-router.get('/:uuid', function(req, res) {
-  Game.find({ uuid: req.params.uuid }, function(err, game) {
+router.get('/:uuid', VerifyToken, function(req, res) {
+  Game.findOne({ uuid: req.params.uuid, userId: req.userId }, function(
+    err,
+    game
+  ) {
     if (err)
       return res.status(500).send('There was a problem finding the game.');
     if (!game) return res.status(404).send('No game found.');

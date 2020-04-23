@@ -1,4 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import axios from 'axios';
+import { useParams, useHistory } from 'react-router-dom';
+import { AuthContext } from '../../context/auth';
 import {
   Box,
   Grid,
@@ -11,16 +14,45 @@ import {
   DialogActions
 } from '@material-ui/core';
 
-const Game = () => {
+const NewGame = () => {
+  const { authToken } = useContext(AuthContext);
   const [player, setPlayer] = useState({ name: 'Patrick', health: 100 });
   const [dragon, setDragon] = useState({ name: 'Dragon', health: 100 });
   const [logs, setLogs] = useState([]);
   const [finished, setFinished] = useState(false);
   const logsEndRef = useRef(null);
+  let { uuid } = useParams();
+  let history = useHistory();
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3030/api/auth/me', {
+        headers: {
+          'auth-token': authToken
+        }
+      })
+      .then(({ data }) => {
+        setPlayer({ ...player, name: data.fullname });
+      });
+  }, [player.name]);
 
   useEffect(() => {
     if (player.health === 0 || dragon.health === 0) {
       setFinished(true);
+      const data = {
+        uuid,
+        health: player.health,
+        opponentHealth: dragon.health,
+        logs: logs
+      };
+
+      axios
+        .post('http://localhost:3030/api/games', data, {
+          headers: {
+            'auth-token': authToken
+          }
+        })
+        .then(({ data }) => console.log(data));
     }
   }, [player, dragon]);
 
@@ -102,6 +134,15 @@ const Game = () => {
     }, 1000);
   };
 
+  const playAgain = () => {
+    const gameId = Math.random()
+      .toString(36)
+      .substr(2, 6);
+
+    history.push(`/games/${gameId}`);
+    window.location.reload();
+  };
+
   const renderLog = log => {
     switch (log.action) {
       case 'heal':
@@ -126,10 +167,20 @@ const Game = () => {
           {message} Play Again?
         </DialogTitle>
         <DialogActions>
-          <Button variant="contained" color="primary" fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={() => playAgain()}
+          >
             Yes
           </Button>
-          <Button variant="contained" color="primary" fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={() => history.push('/')}
+          >
             No
           </Button>
         </DialogActions>
@@ -212,7 +263,7 @@ const Game = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => setFinished(true)}
+              onClick={() => history.goBack()}
               disabled={finished}
               style={{ width: '150px' }}
             >
@@ -237,4 +288,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default NewGame;

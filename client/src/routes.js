@@ -10,7 +10,8 @@ import { isLoggedIn } from './utils';
 import MainLayout from './layouts/MainLayout';
 
 import Main from './pages/Main';
-import Game from './pages/Game';
+import NewGame from './pages/NewGame';
+import ViewGame from './pages/ViewGame';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 
@@ -32,6 +33,7 @@ const PrivateRoute = ({ component: Component, layout: Layout, ...rest }) => (
         {isLoggedIn() ? <Component {...props} /> : <Redirect to="/signin" />}
       </Layout>
     )}
+    {...rest}
   />
 );
 
@@ -42,6 +44,7 @@ const AuthRoute = ({ component: Component, layout: Layout, ...rest }) => (
         {isLoggedIn() ? <Redirect to="/" /> : <Component {...props} />}
       </Layout>
     )}
+    {...rest}
   />
 );
 
@@ -51,8 +54,17 @@ export default () => (
       <AuthRoute exact path="/signin" component={Signin} layout={MainLayout} />
       <AuthRoute exact path="/signup" component={Signup} layout={MainLayout} />
 
+      <PrivateRoute
+        path="/games/:uuid/view"
+        component={ViewGame}
+        layout={MainLayout}
+      />
+      <PrivateRoute
+        path="/games/:uuid"
+        component={NewGame}
+        layout={MainLayout}
+      />
       <PrivateRoute exact path="/" component={Main} layout={MainLayout} />
-      <PrivateRoute path="/games/:id" component={Game} layout={MainLayout} />
     </Switch>
   </Router>
 );

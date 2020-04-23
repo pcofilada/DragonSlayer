@@ -7,6 +7,7 @@ var User = require('../user/User');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var config = require('../config');
+var VerifyToken = require('./VerifyToken');
 
 router.post('/signup', function(req, res) {
   var hashedPassword = bcrypt.hashSync(req.body.password, 8);
@@ -45,6 +46,15 @@ router.post('/signin', function(req, res) {
     });
 
     res.status(200).send({ auth: true, token: token });
+  });
+});
+
+router.get('/me', VerifyToken, function(req, res) {
+  User.findById(req.userId, { password: 0 }, function(err, user) {
+    if (err)
+      return res.status(500).send('There was a problem finding the user.');
+    if (!user) return res.status(404).send('No user found.');
+    res.status(200).send(user);
   });
 });
 
