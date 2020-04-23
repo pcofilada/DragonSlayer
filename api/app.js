@@ -7,4 +7,8 @@ app.use(cors());
 
 var AuthController = require('./auth/AuthController');
 app.use('/api/auth', AuthController);
+
+var GameController = require('./game/GameController');
+app.use('/api/games', GameController);
+
 module.exports = app;
