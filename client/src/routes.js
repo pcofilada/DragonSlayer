@@ -48,11 +48,10 @@ const AuthRoute = ({ component: Component, layout: Layout, ...rest }) => (
 export default () => (
   <Router>
     <Switch>
-      <PublicRoute exact path="/" component={Main} layout={MainLayout} />
-
       <AuthRoute exact path="/signin" component={Signin} layout={MainLayout} />
       <AuthRoute exact path="/signup" component={Signup} layout={MainLayout} />
 
+      <PrivateRoute exact path="/" component={Main} layout={MainLayout} />
       <PrivateRoute path="/games/:id" component={Game} layout={MainLayout} />
     </Switch>
   </Router>
