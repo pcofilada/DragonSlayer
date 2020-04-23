@@ -15,17 +15,6 @@ import ViewGame from './pages/ViewGame';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 
-const PublicRoute = ({ component: Component, layout: Layout, ...rest }) => (
-  <Route
-    render={props => (
-      <Layout>
-        <Component {...props} />
-      </Layout>
-    )}
-    {...rest}
-  />
-);
-
 const PrivateRoute = ({ component: Component, layout: Layout, ...rest }) => (
   <Route
     render={props => (
