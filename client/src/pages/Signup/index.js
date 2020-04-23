@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { useHistory, Link } from 'react-router-dom';
 import { Grid, Box, TextField, Button } from '@material-ui/core';
 
 const Signin = () => {
+  const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   let history = useHistory();
@@ -13,14 +13,15 @@ const Signin = () => {
     e.preventDefault();
 
     axios
-      .post('http://localhost:3030/api/auth/signin', {
+      .post('http://localhost:3030/api/auth/signup', {
+        fullname,
         email,
         password
       })
       .then(({ data }) => {
-        Cookies.set('token', data.token);
-
-        history.push('/games/1');
+        setTimeout(() => {
+          history.push('/signin');
+        }, 1000);
       });
   };
 
@@ -29,12 +30,21 @@ const Signin = () => {
       <Grid item xs={4}>
         <form onSubmit={e => submitHandler(e)}>
           <TextField
+            id="fullname"
+            label="Fullname"
+            type="text"
+            variant="outlined"
+            fullWidth
+            value={fullname}
+            onChange={e => setFullname(e.target.value)}
+          />
+          <TextField
             id="email"
             label="Email"
             type="email"
             variant="outlined"
+            style={{ marginTop: 10, marginBottom: 10 }}
             fullWidth
-            margin="normal"
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
@@ -55,10 +65,10 @@ const Signin = () => {
             style={{ marginTop: 10, marginBottom: 10 }}
             type="submit"
           >
-            Sign In
+            Sign Up
           </Button>
           <small>
-            No Account Yet? <Link to="/signup">Sign Up</Link>
+            Have Account Already? <Link to="/signin">Sign In</Link>
           </small>
         </form>
       </Grid>
