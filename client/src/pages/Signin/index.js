@@ -33,6 +33,7 @@ const Signin = () => {
         Cookies.set('token', data.token);
 
         history.push('/');
+        window.location.reload();
       })
       .catch(() => {
         setPassword('');
@@ -42,7 +43,7 @@ const Signin = () => {
 
   return (
     <Box display="flex" justifyContent="center" spacing={3}>
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={6} md={8} lg={4}>
         <form onSubmit={e => submitHandler(e)}>
           <Input
             id="email"
